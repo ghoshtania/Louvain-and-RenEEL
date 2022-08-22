@@ -1,0 +1,8 @@
+Use an edgelist file including 2 columns separated by space or tab with no header. The network should be unweighted, undirected. Self-loops will be ignored.
+Example: sh work.sh karate.txt
+
+graph.cpp and graph.h are the files for graph handling. 
+In main.cpp, the inputGraph function takes the information of a graph from the file degree.txt and info.txt and puts them in the struct insert I. 
+Then, the function convert_Insert_to_class_Graph in main.cpp converts the struct insert I to a class Graph.  For that I have defined a constructor name Graph(int size, int link) in the class Graph (in Graph.cpp).
+After that, louvain.cpp starts working the louvain algorithm on that graph. After running the louvain algorithm each time, the result has been stored in struct ans, like you did. 
+ 

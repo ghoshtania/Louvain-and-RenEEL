@@ -1,0 +1,5 @@
+seed=1
+kmax=2
+kp=2
+reducing time: 0.020196
+Qfinal=0.021305

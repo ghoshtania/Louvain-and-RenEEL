@@ -42,16 +42,19 @@ public:
   };
   
   unsigned int nb_nodes;
+  unsigned int nb_com;
   unsigned int nb_links;
   double total_weight;  
+  int col, row;
   // unsigned int com;
   //double *nb_selfloop; //an array(of N elements) of which  return the number of self loops of the node
   //double *weighted_degree; //an array (of N elements) of which each element returns the weighted degree of the node
-
+  int denominator;
   vector<unsigned int> degrees;
   vector<vector<int> > nodes;
   vector<unsigned int> links;
   vector<double> weights;
+  vector<vector<int> > member;
 
   Graph();
   Graph(int size, int links);
@@ -70,10 +73,10 @@ public:
   void add_node(vector<int>& n);
   void display(void);
   void display_for_check(void);
-  void display_reverse(void);
+ // void display_reverse(void);
  // void display_binary(char *outfile);
   void write_community(const char *filename_w);
-  bool check_symmetry();
+  //bool check_symmetry();
   //double nb_selfloops(unsigned int node);
   //double calculate_weighted_degree(unsigned int node);
 //inline unsigned int cumulative_degree(unsigned int i);
@@ -117,15 +120,16 @@ Graph::nb_selfloops(unsigned int node) {
     //cerr<<"Hello"<<endl;
       if (weights.size()!=0)
       { self = (double)*(p.second+i);
+        //cout<<"self"<<self<<endl;
   return self; }
       else 
   {self = 1.;
     return self;}
-    //cout<<"self"<<self<<endl;
+    
     }
   
 } 
-  //cerr<<"HIIII"<<endl;
+ 
   return 0.;
 }
 
@@ -140,12 +144,12 @@ Graph::weighted_degree(unsigned int node) {
         return (double)nb_neighbors(node);}
   else {
     pair<vector<unsigned int>::iterator, vector<double>::iterator > p = neighbors(node);
-    // cout<< "Hey2"<<endl;
+    
     double res = 0;
     for (unsigned int i=0 ; i<nb_neighbors(node) ; i++) {
       res += (double)*(p.second+i);
     }
-    cout<<"weighted_degree"<<res<<endl; 
+    //cout<<"weighted_degree"<<res<<endl; 
     return res;
   }
     

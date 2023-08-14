@@ -45,14 +45,16 @@ using namespace std;
 //     //cout<<"Hello11"<<endl;
 // }
 
-Community::Community(struct Graph gc, int nbp) {
+Community::Community(Graph gc, int nbp) {
+  cout <<"insidecom"<<endl;
   g = gc; //
+  
   size = g.nb_nodes;
   cout<<"size"<<size;
   neigh_weight.resize(size,-1);
   neigh_pos.resize(size);
   neigh_last=0;
-
+  
 
   n2c.resize(size);
   ini.resize(size);
@@ -60,7 +62,7 @@ Community::Community(struct Graph gc, int nbp) {
   tot.resize(size);
 
   for (int i=0 ; i<size ; i++) {
-  //cout<<"check3"<<endl;
+  cout<<"check3"<<endl;
     n2c[i] = i;
     ini[i]  = g.nb_selfloops(i);
     tot[i] = g.weighted_degree(i);
@@ -132,12 +134,15 @@ Community::display() {
 double
 Community::modularity() {
   double q  = 0.;
-  double m2 = (double)g.total_weight;
+  int m2 = 2*(g.denominator);
+  int m1 = g.total_weight;
+  //cout<<"total_weight"<<g.total_weight<<endl;
+  //cout<<"Denominator"<<m2<<endl;
   //cout <<"m2 value "<<m2<<endl;
 
   for (int i=0 ; i<size ; i++) {
     if (tot[i]>0)
-      q += (double)ini[i]/m2 - ((double)tot[i]/m2)*((double)tot[i]/m2);
+      q += (double)ini[i]/m1 - ((double)tot[i]/m1)*((double)tot[i]/m1);
   }
  //cout<<"check"<<endl;
   return q;
@@ -243,12 +248,10 @@ Community::partition2graph_binary() {
   for (int node=0 ; node<size ; node++) {
     renumber[n2c[node]]++;
   }
-
   int final=0;
   for (int i=0 ; i<size ; i++)
     if (renumber[i]!=-1)
       renumber[i]=final++;
-
   // Compute communities
   vector<vector<int> > comm_nodes(final);
   vector<vector<int> > communities(final);
@@ -322,6 +325,7 @@ Community::partition2graph_binary() {
     //     cout<<"node"<<i<<"g2.weights"<<g2.weights[i]<<endl; //g2.weights [node] gives weights of each member of a supernode
     // cout<<"g2.total_weight"<<g2.total_weight<<endl; //g2.total_weight gives the total weight of a supernode
     // cout<<"end of one supernode"<<endl;
+    g2.denominator = g.denominator;
   }
 
   return g2;
@@ -409,4 +413,3 @@ Community::one_level() {
 
   return improvement;
 }
-

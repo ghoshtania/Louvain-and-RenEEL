@@ -8,4 +8,6 @@
 #include <vector>
 #include <algorithm>
 #include "body.h"
-struct part Louvain(Graph inputG);
+//void gcopy(struct insert I,struct insert *Ia);
+//void freeG(struct insert I);
+struct part Louvain(Graph inputG, struct inserting I);

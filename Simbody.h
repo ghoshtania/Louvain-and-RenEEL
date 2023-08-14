@@ -1,6 +1,6 @@
 #define Inf_Sma 1e-6
 
-struct inserting
+struct graph
 {
     int N;
     int n;

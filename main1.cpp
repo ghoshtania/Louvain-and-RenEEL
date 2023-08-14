@@ -24,16 +24,15 @@
 int *cols;
 
 int findxiny(int x, int *y);
-double cumulative_degree(unsigned int i,struct inserting I);
-unsigned int Links(int i,struct inserting I);
-double Weight(unsigned int i,struct inserting I);
-Graph convert_Insert_to_class_Graph(struct inserting I);
-Graph convert_Insert_to_class_Graph1(struct inserting I);
-void inputGraph(struct inserting *I);
+double cumulative_degree(unsigned int i,struct insert I);
+unsigned int Links(int i,struct insert I);
+double Weight(unsigned int i,struct insert I);
+Graph convert_Insert_to_class_Graph(struct insert I);
+void inputGraph(struct insert *I);
 int cleansort(struct part *ensem,int kmax,int N);
 int getscore(int *score,int *edgecc, int N,int know,int *ref);
-void renorm(struct inserting I, int *ref);
-int mergroup(struct inserting *I, int x, int y);
+void renorm(struct insert I, int *ref);
+int mergroup(struct insert *I, int x, int y);
 int comps(int *p, int *q, int N);
 void remolast(struct part *ensemble, int ens, int *edgecc, int N)
 {
@@ -167,7 +166,7 @@ double rand1(unsigned int* seed)
 
 }
 
-double comp(struct inserting I)
+double comp(struct insert I)
 {
     double ans=0;
     int i;
@@ -201,14 +200,15 @@ int main(int argc, char *argv[])
     kmax=copy1*size;
     copy2=atoi(argv[2]);
     kp=copy2*size;
-    seed=(unsigned int)time(NULL);
+
+    srand(time(NULL));
     //fprintf(fout,"seed=%d\n",seed);
     //fprintf(frc,"seed=%d ",seed);
     //fprintf(fout,"kmax=%d\nkp=%d\n",kmax,kp);
     //fprintf(frc,"kmax=%d kp=%d ",kmax,kp);
     printf("seed=%d\n",seed);
     printf("kmax=%d\nkp=%d\n",kmax,kp);
-
+    printf("size",size);
     seedlist=(unsigned int*)malloc(sizeof(unsigned int)*size);
     for (i=0;i<size;i++)
     {
@@ -216,47 +216,40 @@ int main(int argc, char *argv[])
         seedlist[i]=seed+i;
     }
     // cout << "hello"<<endl;
-    struct inserting I;
+    struct insert I;
     inputGraph(&I);
-    cout<<"Completed inputGraph "<<endl;
-
     // cout << G.nb_nodes<<endl;
-    Graph g = convert_Insert_to_class_Graph1(I); 
+    Graph g = convert_Insert_to_class_Graph(I); 
     //display_for_check();
-
+    cout<<"here it is"<<endl;
     printf("1st graph");
-    printf ("\n");
-    printf ("I.n %d\n", I.n);
-    //Louvain(g,I);
+    for (int i=0; i<I.com; i++)
+    {
+        printf("degreelist %d\n", I.dl[i]);   //print the degree for each node
 
-    // for (int i=0; i<I.com; i++)
-    // {
-    //     printf("degreelist %d\n", I.dl[i]);   //print the degree for each node
-
-    //     printf("neigh_list\n");
-    //     for (int j =0; j<I.nl[i][0]+1; j++) 
-    //         printf("%d %d\n",j, I.nl[i][j]+1);   //print the neighbor list for each node    
-    //     // printf("weight_list\n");
-    //     // for (int k =0; k<I.nl[i][0]+1; k++)
-    //     //     printf("%d %d\n",k, I.wl[i][k]);   //print the weight list for each node
+        printf("neigh_list\n");
+        for (int j =0; j<I.nl[i][0]+1; j++) 
+            printf("%d %d\n",j, I.nl[i][j]+1);   //print the neighbor list for each node    
+        // printf("weight_list\n");
+        // for (int k =0; k<I.nl[i][0]+1; k++)
+        //     printf("%d %d\n",k, I.wl[i][k]);   //print the weight list for each node
             
-    //     // printf("member_list \n");
-    //     // for (int k =0; k<I.ml[i][0]+1; k++)
-    //     //     printf("%d %d\n",k, I.ml[i][k]);   //print the member list for each node
-    //         printf("END\n");
-    // }
+        // printf("member_list \n");
+        // for (int k =0; k<I.ml[i][0]+1; k++)
+        //     printf("%d %d\n",k, I.ml[i][k]);   //print the member list for each node
+            printf("END\n");
+    }
     //g.display_for_check();
     //Louvain(g);
  //    fprintf(fout,"links=%d nodes=%d\n",nb_links,nb_nodes);
  //    printf("links=%d nodes=%d\n",nb_links,nb_nodes);
  //    fprintf(frc,"links=%d nodes=%d ",nb_links,nb_nodes);
  //       puttime(fout,"reading time");
-  //input network
+ // //input network
 
-    struct part *ensemble,*iterensem; //ensemble array is for original graph, where iterensem is for reduced graph
+    struct part *ensemble,*iterensem;
     ensemble=(struct part*)malloc(sizeof(struct part)*kmax);
     iterensem=(struct part*)malloc(sizeof(struct part)*kp);
-
 
  printf("working on initialization\n");
  // fprintf(fout,"working on initialization\n");
@@ -269,25 +262,26 @@ int main(int argc, char *argv[])
     {    for (j=0;j<copy1;j++)
         {
 
-                ensemble[j*size]=Louvain(g,I);
+                ensemble[j*size]=Louvain(g);
                 ofstream outfile;
                 outfile.open("Com.txt", ofstream::trunc);
                 outfile.close();
+                //cout<<"Mod value"<<ensemble[j].Q;
             
         //get set of partitions
         }
     }
-    for (j=0;j<copy1;j++) 
-        {
-            cout<<"Mod value ensemble "<<ensemble[j].Q<<endl;
-            cout<<"com in ensemble "<<ensemble[j].com<<endl;
-            for (int k=0; k<I.N; k++)
-                cout <<"node "<<k<<"partition in ensemble "<< ensemble[j].pa[k]<<endl;
-        }
+    // for (j=0;j<copy1;j++)
+    // {
+    //     cout<<"Mod Value"<<ensemble[j].Q<<endl;
+    //     for (int i =0; i<35; i++)
+    //         cout<<i<<" "<<ensemble[j].pa[i]<<endl;
+    //     cout<<endl;
+    // }
 
  //    //puttime(fout,"initialization time");
      know=cleansort(ensemble,kmax,I.N);
-     cout<<"cleansort"<<know<<endl;
+     cerr<<"cleansort"<<know<<endl;
     // puttime(fout,"sort time");
      //cout<<"know value\n"<<know;
     cols=(int*)malloc(sizeof(int)*I.N);
@@ -320,80 +314,18 @@ int main(int argc, char *argv[])
         score[i] = i + 1;
 
 
-   //  int sizeofRN;
-   //  sizeofRN=getscore(score,edgecc,I.N,know,ref);
-   //  //update I, edgecc
-   //  cout<<"Size of RN "<<sizeofRN<<endl;
-   //  renorm(I,ref);
-   //      //I.N=sizeofRN;
-   //  printf("I.com %d I.N %d\n", I.com,I.N); 
-   //      I.com=sizeofRN;
-   //      printf("I.com %d I.N %d\n", I.com,I.N); 
-   //  printf("2nd set\n"); 
-   //   FILE *fout1;
-   //  fout1=fopen("second_graph.txt","w"); //to write
-   //  for (int i=0; i<I.com; i++)
-   //  {
-   //      printf("degreelist %d\n", I.dl[i]);   //print the degree for each node
-
-   //      printf("neigh_list\n");
-   //      for (int j =0; j<I.nl[i][0]+1; j++) 
-   //          printf("%d %d\n",j, I.nl[i][j]+1);   //print the neighbor list for each node
-            
-   //      printf("weight_list\n");
-   //      for (int k =0; k<I.nl[i][0]+1; k++)
-   //          printf("%d %d\n",k, I.wl[i][k]);   //print the weight list for each node
-            
-   //      printf("member_list \n");
-   //      for (int k =0; k<I.ml[i][0]+1; k++)
-   //          printf("%d %d\n",k, I.ml[i][k]);   //print the member list for each node
-   //          printf("END\n");
-        
-   //  } 
-   // Graph g2 = convert_Insert_to_class_Graph1(I);
-   // cout<<"check"<<endl;
-   //       //partitions of newG
-   //      for (j=0;j<copy2;j++)
-   //  {
-
-   //      {
-            
-   //                  iterensem[j*size]=Louvain(g2, I);
-   //                  ofstream outfile;
-   //                  outfile.open("Com.txt", ofstream::trunc);
-   //                  outfile.close();
-
-   //      }
-   //         }
-   //  for (j=0;j<copy2;j++) 
-   //      {
-   //          cout<<"Mod value iterensem "<<iterensem[j].Q<<endl;
-   //          cout<<"com in iterensem "<<iterensem[j].com<<endl;
-   //          for (int k=0; k<I.N; k++)
-   //              cout <<"node "<<k<<"partition in iterensem "<< iterensem[j].pa[k]<<endl;
-   //      }
-  cout<<"Loop is about to start"<<endl;
-    
-    //T1=clock();
-    while (know>1)
-    { 
-        iteration++;
-
-        printf("%d:size=%d,ensem=%d,%lf,%lf\n",iteration,I.com,know,ensemble[0].Q,ensemble[know-1].Q);
-       // fprintf(fout,"%d:size=%d,ensem=%d,%lf,%lf\n",iteration,G.com,know,ensemble[0].Q/(2*nb_links),ensemble[know-1].Q/(2*nb_links));
-
+    cerr<<"2nd graph"<<endl;
       int sizeofRN;
         sizeofRN=getscore(score,edgecc,I.N,know,ref);
         //update I, edgecc
-        cout<<"Size of RN "<<sizeofRN<<endl;
+
     renorm(I,ref);
-        //I.N=sizeofRN;
-    printf("1I.com %d I.N %d\n", I.com,I.N); 
         I.com=sizeofRN;
-        printf("I.com %d I.N %d\n", I.com,I.N); 
-    printf("2nd set\n"); 
-     FILE *fout1;
-    fout1=fopen("second_graph.txt","w"); //to write
+     
+ 
+    printf("I.com %d I.N %d\n", I.com,I.N); 
+    //FILE *fout1;
+    //fout1=fopen("second_graph.txt","w"); //to write
     for (int i=0; i<I.com; i++)
     {
         printf("degreelist %d\n", I.dl[i]);   //print the degree for each node
@@ -410,34 +342,28 @@ int main(int argc, char *argv[])
         for (int k =0; k<I.ml[i][0]+1; k++)
             printf("%d %d\n",k, I.ml[i][k]);   //print the member list for each node
             printf("END\n");
-        if (I.wl[i][0] == 0)
-            {for (int j =1; j<I.nl[i][0]+1; j++) 
-            fprintf(fout1,"%d %d %.2f\n",i+1, I.nl[i][j]+1, float(I.wl[i][j])/2.);  } //print the neighbor list for each node 
-        else
-           { fprintf(fout1,"%d %d %d\n",i+1, i+1, I.wl[i][0]*2);
-             for (int j =1; j<I.nl[i][0]+1; j++) 
-                fprintf(fout1,"%d %d %.2f\n",i+1, I.nl[i][j]+1, float(I.wl[i][j])/2.);   //print the neighbor list for each node 
-            } 
+
+        // if (I.wl[i][0] == 0)
+        //     {for (int j =1; j<I.nl[i][0]+1; j++) 
+        //     fprintf(fout1,"%d %d %.2f\n",i+1, I.nl[i][j]+1, float(I.wl[i][j])/2.);  } //print the neighbor list for each node 
+        // else
+        //    { fprintf(fout1,"%d %d %d\n",i+1, i+1, I.wl[i][0]*2);
+        //      for (int j =1; j<I.nl[i][0]+1; j++) 
+        //         fprintf(fout1,"%d %d %.2f\n",i+1, I.nl[i][j]+1, float(I.wl[i][j])/2.);   //print the neighbor list for each node 
+        //     } 
 
     }
-   fclose(fout1);
- 
-    printf("I.com %d I.N %d\n", I.com,I.N); 
-    Graph g2 = convert_Insert_to_class_Graph1(I);
-    //g2.display_for_check();
-
-
-
- //    //puttime(fout,"reducing time");
-    
-
+   //fclose(fout1);
+   Graph g2 = convert_Insert_to_class_Graph(I);
+   //display_for_check();
+    cout<<"here it is"<<endl;
         //partitions of newG
         for (j=0;j<copy2;j++)
     {
 
         {
             
-                    iterensem[j*size]=Louvain(g2,I);
+                    iterensem[j*size]=Louvain(g2);
                     ofstream outfile;
                     outfile.open("Com.txt", ofstream::trunc);
                     outfile.close();
@@ -524,9 +450,164 @@ int main(int argc, char *argv[])
                 }
             }
         }
-    cout<<"end of iteration"<<endl;
-        //free iterensem
-   }
+   
+    //T1=clock();
+ //    while (know>1)
+ //    { 
+ //        iteration++;
+
+ //        printf("%d:size=%d,ensem=%d,%lf,%lf\n",iteration,I.com,know,ensemble[0].Q,ensemble[know-1].Q);
+ //       // fprintf(fout,"%d:size=%d,ensem=%d,%lf,%lf\n",iteration,G.com,know,ensemble[0].Q/(2*nb_links),ensemble[know-1].Q/(2*nb_links));
+
+ //      int sizeofRN;
+ //        sizeofRN=getscore(score,edgecc,I.N,know,ref);
+ //        //update I, edgecc
+ //        cout<<"Size of RN "<<sizeofRN<<endl;
+ //    renorm(I,ref);
+ //        //I.N=sizeofRN;
+ //    printf("I.com %d I.N %d\n", I.com,I.N); 
+ //        I.com=sizeofRN;
+ //        printf("I.com %d I.N %d\n", I.com,I.N); 
+ //    printf("2nd set\n"); 
+ //     FILE *fout1;
+ //    fout1=fopen("second_graph.txt","w"); //to write
+ //    for (int i=0; i<I.com; i++)
+ //    {
+ //        printf("degreelist %d\n", I.dl[i]);   //print the degree for each node
+
+ //        printf("neigh_list\n");
+ //        for (int j =0; j<I.nl[i][0]+1; j++) 
+ //            printf("%d %d\n",j, I.nl[i][j]+1);   //print the neighbor list for each node
+            
+ //        printf("weight_list\n");
+ //        for (int k =0; k<I.nl[i][0]+1; k++)
+ //            printf("%d %d\n",k, I.wl[i][k]);   //print the weight list for each node
+            
+ //        printf("member_list \n");
+ //        for (int k =0; k<I.ml[i][0]+1; k++)
+ //            printf("%d %d\n",k, I.ml[i][k]);   //print the member list for each node
+ //            printf("END\n");
+ //        if (I.wl[i][0] == 0)
+ //            {for (int j =1; j<I.nl[i][0]+1; j++) 
+ //            fprintf(fout1,"%d %d %.2f\n",i+1, I.nl[i][j]+1, float(I.wl[i][j])/2.);  } //print the neighbor list for each node 
+ //        else
+ //           { fprintf(fout1,"%d %d %d\n",i+1, i+1, I.wl[i][0]*2);
+ //             for (int j =1; j<I.nl[i][0]+1; j++) 
+ //                fprintf(fout1,"%d %d %.2f\n",i+1, I.nl[i][j]+1, float(I.wl[i][j])/2.);   //print the neighbor list for each node 
+ //            } 
+
+ //    }
+ //   fclose(fout1);
+ 
+ //    printf("I.com %d I.N %d\n", I.com,I.N); 
+ //    Graph g2 = convert_Insert_to_class_Graph(I);
+ //    //g2.display_for_check();
+
+
+
+ // //    //puttime(fout,"reducing time");
+    
+
+ //        //partitions of newG
+ //        for (j=0;j<copy2;j++)
+ //    {
+
+ //        {
+            
+ //                    iterensem[j*size]=Louvain(g2);
+ //                    ofstream outfile;
+ //                    outfile.open("Com.txt", ofstream::trunc);
+ //                    outfile.close();
+
+ //        }
+ //           }
+ //    for (j=0;j<copy1;j++) cout<<"Mod value 1st ensemble"<<ensemble[j].Q<<endl;
+ //    for (j=0;j<copy2;j++) cout<<"Mod value 2nd ensemble"<<iterensem[j].Q<<endl; 
+
+
+ //    //puttime(fout,"RG time");
+ //        //pick the best
+ //        bp = 0;    j = 1;
+ //        for (i=1;i<kp;i++)
+ //            if (abs(iterensem[i].Q - iterensem[bp].Q) < Tsmall)
+ //            {
+ //                j++;
+ //                if (rand1(seedlist)*j < 1)
+ //                {
+ //                    free(iterensem[bp].pa);
+ //                    bp = i;
+ //                }
+ //                else
+ //                    free(iterensem[i].pa);
+ //            }
+ //            else if (iterensem[i].Q > iterensem[bp].Q)
+ //            {
+ //                j = 1;
+ //                free(iterensem[bp].pa);
+ //                bp=i;
+ //            }
+ //            else
+ //            {
+ //                free(iterensem[i].pa);
+ //            }
+ //    cout<<"bestpartition"<<iterensem[bp].Q<<endl;
+ //        //update ensemble and edgecc
+ //        i = -1;
+ //        for (j = 0;j<know;j++)
+ //            if (abs(iterensem[bp].Q -ensemble[j].Q )<Tsmall)
+ //            {   cout<<"iterensem[bp].com"<<iterensem[bp].com<<endl;
+ //                cout<<"ensemble[j].com"<<ensemble[j].com<<endl;
+ //                if (iterensem[bp].com == ensemble[j].com)
+ //                { for (int i=0; i<I.N; i++) cout<<"ensemble[j]"<<ensemble[j].pa[i]<<endl;
+ //                    cout<<endl;
+ //                  for (int i=0; i<I.N; i++) cout<<"iterensem[bp]"<<iterensem[bp].pa[i]<<endl;
+ //                    if (comps(iterensem[bp].pa, ensemble[j].pa, I.N))
+ //                    {   cout<<"yes"<<endl;
+ //                        i = j;    break;
+ //                    }
+ //                }
+ //            }
+
+ //        if (i >= 0)
+ //        {
+ //            cout<<"yes1"<<endl;
+ //            remolast(ensemble, know, edgecc, I.N);
+ //            know--;
+ //        }
+ //        else
+ //        {
+ //            if (iterensem[bp].Q<ensemble[0].Q)
+ //            {
+ //                cout<<"yes2"<<endl;
+ //                remolast(ensemble, know, edgecc, I.N); know--;
+ //            }
+ //            else
+ //            {
+ //                if (know<kmax)
+ //                {
+
+ //                    cout<<"yes3"<<endl;
+ //                    addone(ensemble, know, iterensem, bp, edgecc, I.N);
+ //                    know++;
+ //                }
+ //                else
+ //                {
+
+ //                    cout<<"yes4"<<endl;
+ //                    cout<<"know and kmax"<<know<<endl<<kmax<<endl;
+ //                    cout<<"Mod of bp"<<iterensem[bp].Q<<endl<<"worst ensemble mod"<<ensemble[0].Q<<endl;
+ //                    replaceone(ensemble, know, iterensem, bp, edgecc, I.N);
+                    
+ //                }
+ //            }
+ //        }
+
+ //    //puttime(fout,"update ensemble time");
+ //    cout<<"I.N and I.com"<<endl<<I.N<<endl<<I.com<<endl;
+
+
+ //        //free iterensem
+ //   }
  
  //    // fprintf(fout,"rest time=%lf\n",(double)(clock()-T1)/CLOCKS_PER_SEC);
  //    // fprintf(fout,"real walltime=%d\n",time(NULL)-sec);
@@ -554,7 +635,7 @@ int main(int argc, char *argv[])
  }
 
 
-int mergroup(struct inserting *I, int x, int y)
+int mergroup(struct insert *I, int x, int y)
 {
     int i;
     int *newlist,*newl2;
@@ -642,7 +723,7 @@ int mergroup(struct inserting *I, int x, int y)
     return 0;
 }
 
-void movegroup(struct inserting *I, int f, int t)
+void movegroup(struct insert *I, int f, int t)
 {
     int i,j;
     I->ml[t]=I->ml[f];
@@ -662,13 +743,13 @@ void movegroup(struct inserting *I, int f, int t)
 }
 
 
-void renorm(struct inserting I,int *ref)
+void renorm(struct insert I,int *ref)
 { 
     int i,j;
     //renormlize G
     for (i=0;i<I.com;i++)
-    {  //printf("I.dl in renorm subroutine %d\n",I.dl[i]);
-       //printf("ref[i]  %d\n",ref[i]);
+    {  printf("I.dl in renorm subroutine %d\n",I.dl[i]);
+       printf("ref[i]  %d\n",ref[i]);
         if (ref[i]!=i)
         {
 
@@ -726,8 +807,7 @@ int getscore(int *score,int *edgecc, int N,int know,int *ref)
     }
     for (i = 0;i < N;i++)
         {score[i] = newsc[i];
-            //cout<<"score[i] "<<score[i]<<endl;
-        }
+            cout<<"score[i] "<<score[i]<<endl;}
 
     free(newsc);
     return (groupsnumber);
@@ -799,7 +879,7 @@ int cleansort(struct part *ensem, int kmax,int N)
 
 
 //read Graph data from file
-void inputGraph(struct inserting *I)
+void inputGraph(struct insert *I)
 {
 
     
@@ -818,9 +898,8 @@ void inputGraph(struct inserting *I)
     fi=fopen("degree.txt","r");
     for (i=0;i<I->N;i++)
         fscanf(fi,"%d",I->dl+i);  //from degree.txt, no of degrees has been printed in I->dl for each node
-    
     fclose(fi);
-   
+
     //fi=fopen("check.txt","r");
     for (i=0;i<I->N;i++)
     {
@@ -862,78 +941,8 @@ void inputGraph(struct inserting *I)
 
 }
 
-Graph convert_Insert_to_class_Graph1(struct inserting I){
 
-    Graph g;
-    g.nb_nodes = I.com+1;
-
-    int temp_sum_links = 0;
-    for(int i=0;i<I.com;i++){
-        temp_sum_links += I.nl[i][0];
-    }
-    double temp_sum_weight = 0;
-
-    for(int i=0;i<I.com;i++){
-        temp_sum_weight += I.wl[i][0]*2;
-        for (int j=1; j<=I.nl[i][0];j++){
-            temp_sum_weight += I.wl[i][j];
-        }
-    }
-
-
-    vector<unsigned int> temp_degrees;
-    temp_degrees.push_back(0);
-    for(int i=1;i<g.nb_nodes;i++){
-        
-        temp_degrees.push_back(temp_degrees[i-1]+I.nl[i-1][0]);
-        if(I.wl[i-1][0] != 0)
-            temp_degrees[i]++;
-    }
-
-// pair of links & weights
-    vector<pair<unsigned int,double> > temp_links_weights;
-    for(int i=0;i<I.com;i++){
-        vector<pair<unsigned int,double> > nl_of_a_node;
-        // self-loop
-        if(I.wl[i][0] != 0)
-            nl_of_a_node.push_back(make_pair(i+1, I.wl[i][0]*2));
-
-        for (int j=1; j<=I.nl[i][0];j++){
-            nl_of_a_node.push_back(make_pair(I.nl[i][j]+1, I.wl[i][j]));
-        }
-        sort(nl_of_a_node.begin(), nl_of_a_node.end());
-        temp_links_weights.insert(temp_links_weights.end(), nl_of_a_node.begin(), nl_of_a_node.end());
-    }
-    
-    g.nb_links = temp_sum_links;
-    g.total_weight = temp_sum_weight;
-    g.degrees = temp_degrees;
-    for(int i=0;i<temp_links_weights.size();i++){
-        g.links.push_back(temp_links_weights[i].first);
-        g.weights.push_back(temp_links_weights[i].second);
-    }
-    for (unsigned int i=0 ; i<g.nb_nodes ; i++) {
-        vector<int> n;
-        n.push_back(i);
-        g.nodes.push_back(n);
-
-      }
-
-    // print all
-    // cout << "nb values : "<< g.nb_nodes <<" "<<g.nb_links<<" "<<g.total_weight<<endl;
-    // for(int i=0;i<g.degrees.size();i++){
-    //     cout << g.degrees[i]<<" ";
-    // }
-    // cout << endl;
-    // for(int i=0;i<g.links.size();i++){
-    //     cout<<"i: "<<i<<" links" << g.links[i]<<" : Weights :" << g.weights[i]<<endl; ;
-    // }
-    // cout<<"end"<<endl;
-    return g;
-}
-
-
-Graph convert_Insert_to_class_Graph(struct inserting I)
+Graph convert_Insert_to_class_Graph(struct insert I)
 {  
    Graph g(I.com,I.n);
    g.nb_com = I.com;
@@ -946,7 +955,6 @@ Graph convert_Insert_to_class_Graph(struct inserting I)
     for (int i=0; i<g.nb_com; i++)
       {  
          g.degrees[i+1] = cumulative_degree(i,I);
-       cout<<"node "<<i<<"degree "<<g.degrees[i+1]<<endl;
        }
     
    g.nb_links = g.degrees[g.nb_com];
@@ -959,25 +967,27 @@ Graph convert_Insert_to_class_Graph(struct inserting I)
    g.member.resize(row+1);
    
    // g.member.resize(row+1, vector<int> (col+1));
-
+   cout<<"check2"<<endl; ////?????
+   cout<<"row "<<row<<endl;
+   
    for (int i=1; i<=row; i++)
    {
      col = I.ml[i-1][0];
-     //cout << "col"<<col<<endl;
+     cout << "col"<<col<<endl;
      g.member[i].resize(col+1);
      for (int j=1; j<=col; j++){
         g.member[i][j]=I.ml[i-1][j];
      }
    }
-   //cout<<"check1"<<endl; ////?????
+   cout<<"check1"<<endl; ////?????
     for (int i=1; i<=row; i++)
     {
 
       for (int j=1; j<g.member[i].size(); j++) 
         {
-            //cout<<"member"<<g.member[i][j]<<" ";
+            cout<<"member"<<g.member[i][j]<<" ";
         }
-        //cout<<endl;
+        cout<<endl;
     }
    for (int i=0; i<g.nb_links; i++)
       {
@@ -1002,7 +1012,7 @@ Graph convert_Insert_to_class_Graph(struct inserting I)
    return g;
 }
 
-double cumulative_degree(unsigned int i,struct inserting I)
+double cumulative_degree(unsigned int i,struct insert I)
 {  
   vector <unsigned int> cum_deg(i+1);
    if (I.wl[0][0] == 0) cum_deg[0]=I.nl[0][0];
@@ -1021,7 +1031,7 @@ double cumulative_degree(unsigned int i,struct inserting I)
  
 }
 
-double Weight(unsigned int i,struct inserting I)
+double Weight(unsigned int i,struct insert I)
     {
         vector <unsigned int> weights_list;
         for (int i=0; i<I.com; i++)
@@ -1044,7 +1054,7 @@ double Weight(unsigned int i,struct inserting I)
     return weights_list[i];
 
     }
-unsigned int Links(int i, struct inserting I)
+unsigned int Links(int i, struct insert I)
 { 
    vector<unsigned int> getlink;
   for (int i = 0; i<I.com; i++)
